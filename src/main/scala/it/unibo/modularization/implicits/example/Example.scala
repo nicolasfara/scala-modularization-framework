@@ -16,7 +16,7 @@ trait CloudService extends Host:
 
 class Foo(using c: HighCpu | HighMemory) extends Module[HighCpu | HighMemory, Long, Int]:
   override def apply(v1: Long): Int = c match
-    case _: HighCpu => ???
+    case _: HighCpu    => ???
     case _: HighMemory => ???
 
 class Bar(using capabilities: TemperatureSensor) extends Module[TemperatureSensor, Int, Int]:
