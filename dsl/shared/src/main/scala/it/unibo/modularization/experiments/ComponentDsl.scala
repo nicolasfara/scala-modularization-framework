@@ -2,9 +2,7 @@ package it.unibo.modularization.experiments
 
 import scala.util.Random
 
-trait Capability
-
-enum Module[C <: Capability, +Out]:
+enum Module[C, +Out]:
   case LocalModule(name: String, logic: C => Out)
   case CollectiveModule(name: String, logic: C => Out)
 
@@ -15,25 +13,23 @@ trait Network:
 final case class ComponentContainer(components: Map[String, Module[?, ?]])
 
 final class ComponentScope:
-  def add[C <: Capability, Out](m: Module[C, Out]): Unit = ???
+  def add[C, Out](m: Module[C, Out]): Unit = ???
 
-type Composable = ComponentScope ?=> Unit
-
-def macroSystem(init: Composable): ComponentContainer =
+def macroSystem(init: ComponentScope ?=> Unit): ComponentContainer =
   given componentScope: ComponentScope = ComponentScope()
   val _ = init
   ComponentContainer(Map.empty)
 
-def module[C <: Capability, Out](name: String)(init: C => Out)(using Network): Module.LocalModule[C, Out] =
+def module[C, Out](name: String)(init: C => Out)(using Network): Module.LocalModule[C, Out] =
   Module.LocalModule(name, init)
 
-def collectiveModule[C <: Capability, Out](name: String)(init: C => Out)(using Network): Module.CollectiveModule[C, Out] =
+def collectiveModule[C, Out](name: String)(init: C => Out)(using Network): Module.CollectiveModule[C, Out] =
   Module.CollectiveModule(name, init)
 
-extension [C <: Capability, Out](m: Module[C, Out]) def asLocalResult(using Network): Out = ???
+extension [C, Out](m: Module[C, Out]) def asLocalResult(using Network): Out = ???
 
-class HighCpu extends Capability
-class HighMemory extends Capability
+class HighCpu
+class HighMemory
 
 @main def main =
   given network: Network = ???
